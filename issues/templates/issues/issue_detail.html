@@ -1,0 +1,58 @@
+{% extends 'issues/base.html' %}
+{% load static %}
+{% load group_tags %}
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="card-title">{{ issue.title }}</h3>
+        <p class="card-text">{{ issue.description }}</p>
+        <p class="text-muted">
+            <strong>Category:</strong> {{ issue.get_category_display }} <br>
+            <strong>Status:</strong> 
+            <span class="badge 
+                {% if issue.status == 'open' %} bg-danger 
+                {% elif issue.status == 'in_progress' %} bg-warning 
+                {% else %} bg-success {% endif %}">
+                {{ issue.get_status_display }}
+            </span>
+        </p>
+        <p><strong>Location:</strong> {{ issue.location }}</p>
+    </div>
+    <div class="card-footer text-muted">
+        Reported by {{ issue.created_by.username }} on {{ issue.created_at|date:"M d, Y H:i" }}
+    </div>
+</div>
+
+
+
+<!-- Admin-only status update -->
+{% if is_staff_user %}
+    <h4 class="mt-4">Update Status</h4>
+    <form method="post" action="{% url 'update_status' issue.id %}">
+        {% csrf_token %}
+        <select name="status" class="form-select mb-2">
+            <option value="open" {% if issue.status == 'open' %}selected{% endif %}>Open</option>
+            <option value="in_progress" {% if issue.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="resolved" {% if issue.status == 'resolved' %}selected{% endif %}>Resolved</option>
+        </select>
+        <button type="submit" class="btn btn-success">Update</button>
+    </form>
+{% endif %}
+
+
+{% if is_staff_user %}
+  <h4 class="mt-4">Email History</h4>
+  <ul class="list-group">
+    {% for log in issue.email_logs.all %}
+      <li class="list-group-item">
+        <strong>{{ log.subject }}</strong><br>
+        Sent to {{ log.sent_to }} by {{ log.sent_by.username }} on {{ log.sent_at|date:"M d, Y H:i" }}<br>
+        <small>{{ log.message|truncatewords:20 }}</small>
+      </li>
+    {% empty %}
+      <li class="list-group-item text-muted">No emails sent yet.</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}      

@@ -1,0 +1,64 @@
+{% extends 'issues/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2>Submit Complaint</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <!-- Other complaint fields -->
+        {{ form.as_p }}
+
+        <!-- Map Button -->
+        <div class="mb-3">
+            <button type="button"
+                    id="open-map"
+                    class="btn btn-primary">
+                Select Affected Area on Map
+            </button>
+        </div>
+
+        <!-- Map -->
+        <div id="map"
+             style="height:400px; display:none; margin-bottom:20px;">
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="btn btn-success">
+            Submit Complaint
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- Leaflet CSS -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<!-- Geocoder CSS -->
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-control-geocoder@3.2.0/dist/Control.Geocoder.css"
+/>
+
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Geocoder JS -->
+<script src="https://unpkg.com/leaflet-control-geocoder@3.2.0/dist/Control.Geocoder.js"></script>
+
+<!-- Your JS -->
+<script src="{% static 'issues/map.js' %}"></script>
+{% endblock %}
+```

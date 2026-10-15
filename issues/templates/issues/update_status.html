@@ -1,0 +1,14 @@
+{% extends 'issues/base.html' %}
+{% block content %}
+<h3>Update Issue Status</h3>
+<form method="post">
+    {% csrf_token %}
+    <select name="status" class="form-select mb-2">
+        <option value="open" {% if issue.status == 'open' %}selected{% endif %}>Open</option>
+        <option value="in_progress" {% if issue.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+        <option value="resolved" {% if issue.status == 'resolved' %}selected{% endif %}>Resolved</option>
+    </select>
+    <textarea name="progress_notes" class="form-control mb-2" placeholder="Add progress notes...">{{ issue.progress_notes }}</textarea>
+    <button type="submit" class="btn btn-success">Update</button>
+</form>
+{% endblock %}

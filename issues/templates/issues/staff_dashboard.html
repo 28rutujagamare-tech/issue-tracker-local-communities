@@ -1,0 +1,89 @@
+{% extends 'issues/base.html' %}
+{% block content %}
+<h2 class="mb-4">Staff Dashboard</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Citizen</th>
+      <th>Status</th>
+      <th>Details</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for issue in complaints %}
+    <tr>
+      <td>{{ issue.title }}</td>
+      <td>{{ issue.description }}</td>
+      <td>{{ issue.created_by.username }}</td>
+      <td>{{ issue.get_status_display }}</td>
+      <td>
+        <a href="{% url 'issue_detail' issue.id %}" class="btn btn-sm btn-info">
+          View Details
+        </a>
+      </td>
+      <td>
+        {{ issue.created_by.email }}
+        <!-- Button to trigger modal -->
+      <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
+          data-bs-toggle="modal" data-bs-target="#emailModal{{ issue.id }}">
+    Send Email
+  </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="emailModal{{ issue.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="post" action="{% url 'send_issue_email' issue.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h5 class="modal-title">Send Email to {{ issue.created_by.username }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <textarea name="message" class="form-control" rows="6">
+Dear {{ issue.created_by.username }},
+
+Your complaint "{{ issue.title }}" has been resolved.
+
+Notes: {{ issue.progress_notes }}
+
+Thank you for your patience.
+
+Regards,
+CivicTrack Staff
+                              </textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Send</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">No complaints pending 🎉</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Messages block outside the table -->
+{% if messages %}
+<div class="container mt-3">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

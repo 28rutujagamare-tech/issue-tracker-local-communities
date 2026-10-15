@@ -1,0 +1,29 @@
+{% extends 'issues/base.html' %}
+{% block content %}
+<h2 class="mb-4">My Complaints</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in complaints %}
+        <tr>
+            <td>{{ issue.title }}</td>
+            <td>{{ issue.description }}</td>
+            <td>{{ issue.get_status_display }}</td>
+            <td>{{ issue.progress_notes }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" class="text-center">No complaints submitted yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

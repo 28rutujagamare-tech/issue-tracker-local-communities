@@ -1,0 +1,35 @@
+{% extends 'issues/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 class="mb-4">Community Issues</h2>
+
+<div class="row">
+    {% for issue in issues %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm issue-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ issue.title }}</h5>
+                    <p class="card-text text-muted">
+                        <strong>Category:</strong> {{ issue.get_category_display }} <br>
+                        <strong>Status:</strong> 
+                        <span class="badge 
+                            {% if issue.status == 'open' %} bg-danger 
+                            {% elif issue.status == 'in_progress' %} bg-warning 
+                            {% else %} bg-success {% endif %}">
+                            {{ issue.get_status_display }}
+                        </span>
+                    </p>
+                    <p class="card-text">{{ issue.description|truncatewords:20 }}</p>
+                    <a href="{% url 'issue_detail' issue.id %}" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Reported by {{ issue.created_by.username }} on {{ issue.created_at|date:"M d, Y" }}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No issues reported yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

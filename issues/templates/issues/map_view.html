@@ -1,0 +1,16 @@
+{% extends 'issues/base.html' %}
+{% block content %}
+<h2>Community Issues Map</h2>
+<div id="map" style="height:500px;"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([18.5204, 73.8567], 13); // Pune default
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    {% for issue in issues %}
+        L.marker([{{ issue.latitude }}, {{ issue.longitude }}])
+            .addTo(map)
+            .bindPopup("<b>{{ issue.title }}</b><br>{{ issue.category }}<br>Status: {{ issue.status }}");
+    {% endfor %}
+</script>
+{% endblock %}
